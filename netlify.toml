@@ -1,0 +1,10 @@
+[build]
+    base = "gridsome-airtable/"
+    publish = "src/"
+    command = "npm run build"
+
+[dev]
+    framework = "#custom"
+    command = "npm run develop --prefix gridsome-airtable"
+    targetPort = 8080
+    port = 8888
