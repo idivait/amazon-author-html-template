@@ -17,10 +17,10 @@
         :markdown="fullReview"
         flavor="github"
         :options="{ emoji: true }"
-        :extensions="[removeWrappingParas, replaceQuote, replaceEls]"
+        :extensions="[removeWrappingParas, replaceQuote, replaceEls('em', 'i'), replaceEls('strong', 'b')]"
       />
     </p>
-    <CopyBlock :html="html" button="Copy HTML"/>
+    <CopyBlock :key="mounted" :html="html" button="Copy HTML"/>
     <div class="link--moreDetails">
       <g-link :to="'editorial/' + editorial.id"> Full Details >></g-link>
     </div>
@@ -65,19 +65,25 @@ export default {
         return text.replace(/(\r\n|\n|\r)/gm,"")
       }
       return `<br/>"${pruneNs(review)}"\n-- *${pruneNs(author)}${title ? ` (${pruneNs(title)})`:``}*`
+    },
+    computeHtml: function() {
+      const showdown = this.$refs.VueShowdown;
+      let html = ""
+      if(typeof showdown != undefined) {
+          const converter = this.$refs.VueShowdown.converter;
+          const review = this.$refs.VueShowdown.markdown;
+          html = converter.makeHtml(review);
+      }
+      this.$attrs.pushEditorial(html, this.$attrs.index);
+      return html;
     }
   },
+  updated() {
+    this.html = this.computeHtml;
+  },
   mounted() {
-    const showdown = this.$refs.VueShowdown;
-    let html = ""
-    if(typeof showdown != undefined) {
-      const converter = this.$refs.VueShowdown.converter;
-      const review = this.$refs.VueShowdown.markdown;
-      html = converter.makeHtml(review);
-    }
-    this.$attrs.pushEditorial(html);
-    this.html = html;
     this.mounted += 1
+    this.doc = document
   },
   methods: {
       replaceEls: function(srcNode, replaceNode){
@@ -85,20 +91,20 @@ export default {
             return [{
             type: 'output',
             filter: (text, converter, options)=>{
-              //   let div = this.doc.createElement('div');
-              //   div.innerHTML = text;
+                let div = this.doc.createElement('div');
+                div.innerHTML = text;
 
-              //   let src = div.querySelectorAll(srcNode);
-              //   src = [ ... src ]
-              //   // reverse list so interior els go first
-              //   src.reverse().forEach((node)=>{
-              //     let newNode = this.doc.createElement(replaceNode);
-              //     newNode.innerHTML = node.innerHTML;
-              //     node.replaceWith(newNode);
-              //   });
+                let src = div.querySelectorAll(srcNode);
+                src = [ ... src ]
+                // reverse list so interior els go first
+                src.reverse().forEach((node)=>{
+                  let newNode = this.doc.createElement(replaceNode);
+                  newNode.innerHTML = node.innerHTML;
+                  node.replaceWith(newNode);
+                });
 
-              // return div.innerHTML;
-              return text + "mounted"
+              return div.innerHTML;
+              // return text + "mounted"
             }
           }]
         } else {

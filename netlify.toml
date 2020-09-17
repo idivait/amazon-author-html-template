@@ -5,6 +5,6 @@
 
 [dev]
     framework = "#custom"
-    command = "npm run develop --prefix gridsome-airtable"
-    targetPort = 8080
+    command = "npm run develop"
+    targetPort = 3334
     port = 8888

@@ -30,6 +30,7 @@ module.exports = {
           //   select: {}, //optional
           //   links: [], //optional
           // },
+          
         ],
       },
     },
@@ -38,4 +39,5 @@ module.exports = {
     Editorial: "/editorial/:id", //optional
     // Parties: "/parties/:id", //optional
   },
+  port: 3334
 };

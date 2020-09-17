@@ -1,3 +1,4 @@
 {
-    "instantmarkdown.autoOpenBrowser": false
+    "instantmarkdown.autoOpenBrowser": false,
+    "terminal.integrated.cwd": "./gridsome-airtable"
 }

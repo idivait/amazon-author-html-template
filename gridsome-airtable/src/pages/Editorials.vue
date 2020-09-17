@@ -54,15 +54,15 @@ export default {
         "#18BFFF", // Airtable Blue
         "#D92654", // Airtable Red
       ],
-      editorials: [],
+      editorials: {},
       prefix:"<br><br>"
     };
   },
   computed: {
     paperback: function() {
-      const html = this.editorials.reduce((result, cur, i, array)=>{
+      const editorials = Object.values(this.editorials);
+      const html = editorials.reduce((result, cur, i, array)=>{
         const lastBlock = result[result.length -1];
-        // console.log(lastBlock);
         const tooLong = lastBlock && lastBlock.length + cur.length > 4000;
         if(lastBlock && !tooLong) {
           result[result.length -1] = `${lastBlock}${cur}`;
@@ -78,8 +78,9 @@ export default {
     }
   },
   methods: {
-    pushEditorial: function(editorial) {
-      this.editorials.push(editorial);
+    pushEditorial: function(editorial, id) {
+      //this.editorials[id] = editorial;
+      this.$set(this.editorials, id, editorial);  
     },
   },
 };

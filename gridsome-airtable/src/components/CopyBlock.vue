@@ -33,7 +33,7 @@ div {
   position: relative;
   background: lightgrey;
   border-radius: 14px;
-  padding: 1em 1em 2em 1em;
+  padding: 1em 1em 2.5em 1em;
 
   margin-bottom: 1em;
 }
