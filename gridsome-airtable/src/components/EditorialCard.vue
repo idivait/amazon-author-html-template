@@ -30,8 +30,6 @@
 <script>
 import moment from "moment";
 import CopyBlock from "~/components/CopyBlock.vue";
-import $DOM from "mock-dom-resources";
-let win = $DOM();
 export default {
   name: "editorialCard",
   props: {
@@ -43,7 +41,7 @@ export default {
   },
   data() {
     return {
-      doc: win.document,
+      doc: false,
       html: 'Example HTML',
       mounted: 0,
       removeWrappingParas: () => [{
@@ -67,6 +65,7 @@ export default {
       return `<br/>"${pruneNs(review)}"\n-- *${pruneNs(author)}${title ? ` (${pruneNs(title)})`:``}*`
     },
     computeHtml: function() {
+      if(this.mounted === 0) return ``;
       const showdown = this.$refs.VueShowdown;
       let html = ""
       if(typeof showdown != undefined) {
@@ -81,7 +80,7 @@ export default {
   updated() {
     this.html = this.computeHtml;
   },
-  mounted() {
+  async mounted() {
     this.mounted += 1
     this.doc = document
   },
@@ -91,40 +90,27 @@ export default {
             return [{
             type: 'output',
             filter: (text, converter, options)=>{
-                let div = this.doc.createElement('div');
-                div.innerHTML = text;
+                // let div = this.doc.createElement('div');
+                // div.innerHTML = text;
 
-                let src = div.querySelectorAll(srcNode);
-                src = [ ... src ]
+                // let src = div.querySelectorAll(srcNode);
+                // src = [ ... src ]
                 // reverse list so interior els go first
-                src.reverse().forEach((node)=>{
-                  let newNode = this.doc.createElement(replaceNode);
-                  newNode.innerHTML = node.innerHTML;
-                  node.replaceWith(newNode);
-                });
+                // src.reverse().forEach((node)=>{
+                //   let newNode = this.doc.createElement(replaceNode);
+                //   newNode.innerHTML = node.innerHTML;
+                //   node.replaceWith(newNode);
+                // });
+                console.log("returns post-mount?");
 
-              return div.innerHTML;
-              // return text + "mounted"
+              return text;
             }
           }]
         } else {
                       return [{
             type: 'output',
             filter: (text, converter, options)=>{
-              //   let div = this.doc.createElement('div');
-              //   div.innerHTML = text;
-
-              //   let src = div.querySelectorAll(srcNode);
-              //   src = [ ... src ]
-              //   // reverse list so interior els go first
-              //   src.reverse().forEach((node)=>{
-              //     let newNode = this.doc.createElement(replaceNode);
-              //     newNode.innerHTML = node.innerHTML;
-              //     node.replaceWith(newNode);
-              //   });
-
-              // return div.innerHTML;
-              return text + "not mounted"
+              return "converting text"
             }
           }]
         }
