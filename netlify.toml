@@ -1,6 +1,6 @@
 [build]
     base = "gridsome-airtable/"
-    publish = "src/"
+    publish = "dist/"
     command = "npm run build"
 
 [dev]
