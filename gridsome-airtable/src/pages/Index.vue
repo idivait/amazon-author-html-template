@@ -11,7 +11,7 @@
       <h1 class="handwriting">How to Use</h1>
       <ol>
         <li>
-          Go to the <g-link to="/editorials">Editorials</g-link> page to get
+          Go to the <g-link to="/editorials/">Editorials</g-link> page to get
           started.
         </li>
       </ol>

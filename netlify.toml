@@ -8,9 +8,3 @@
     command = "npm run develop"
     targetPort = 3334
     port = 8888
-
-[[redirects]]
-    from = "/editorials/"
-    to = "/editorials"
-    status = 200
-    force = true

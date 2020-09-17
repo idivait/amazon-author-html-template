@@ -10,19 +10,19 @@
       formatDate(editorial.dateModified)
     }}</time>
     <!-- TODO: Figure out how to parse MD -->
-    <p class="editorial--excerpt">
+    <div class="editorial--excerpt">
       <VueShowdown
-      :key="mounted"
+        :key="mounted"
         ref="VueShowdown"
         :markdown="fullReview"
         flavor="github"
         :options="{ emoji: true }"
         :extensions="[removeWrappingParas, replaceQuote, replaceEls('em', 'i'), replaceEls('strong', 'b')]"
       />
-    </p>
+    </div>
     <CopyBlock :key="mounted" :html="html" button="Copy HTML"/>
     <div class="link--moreDetails">
-      <g-link :to="'editorial/' + editorial.id"> Full Details >></g-link>
+      <g-link :to="'/editorial/' + editorial.id + '/'"> Full Details >></g-link>
     </div>
   </div>
 </template>
@@ -41,9 +41,7 @@ export default {
   },
   data() {
     return {
-      doc: false,
-      html: 'Example HTML',
-      mounted: 0,
+      html: 'Generating HTML...',
       removeWrappingParas: () => [{
         type: 'output',
         regex: /<p>(.+?)<\/p>/gsm,
@@ -56,6 +54,9 @@ export default {
       }]
     }
   },
+  mounted: function(){
+    this.html = this.computedHtml;
+  },
   computed: {
     fullReview: function() {
       const {review, author, title} = this.editorial;
@@ -64,8 +65,8 @@ export default {
       }
       return `<br/>"${pruneNs(review)}"\n-- *${pruneNs(author)}${title ? ` (${pruneNs(title)})`:``}*`
     },
-    computeHtml: function() {
-      if(this.mounted === 0) return ``;
+    computedHtml: function() {
+      if(!this.$refs.VueShowdown) return ``;
       const showdown = this.$refs.VueShowdown;
       let html = ""
       if(typeof showdown != undefined) {
@@ -75,40 +76,34 @@ export default {
       }
       this.$attrs.pushEditorial(html, this.$attrs.index);
       return html;
-    }
-  },
-  async updated() {
-    this.mounted = 1
-    this.html = this.computeHtml
-  },
-  async mounted() {
-    this.mounted = 1
-    this.doc = document
+    },
   },
   methods: {
       replaceEls: function(srcNode, replaceNode){
-        if(this.mounted > 0){
+        if(typeof document !== 'undefined'){
+          const doc = document;
             return [{
             type: 'output',
             filter: (text, converter, options)=>{
-                let div = this.doc.createElement('div');
+                let div = doc.createElement('div');
                 div.innerHTML = text;
 
                 let src = div.querySelectorAll(srcNode);
                 src = [ ... src ]
                 //reverse list so interior els go first
                 src.reverse().forEach((node)=>{
-                  let newNode = this.doc.createElement(replaceNode);
+                  let newNode = doc.createElement(replaceNode);
                   newNode.innerHTML = node.innerHTML;
                   node.replaceWith(newNode);
                 });
                 console.log("returns post-mount?");
+                const markup = ``;
 
               return div.innerHTML;
             }
           }]
         } else {
-                      return [{
+            return [{
             type: 'output',
             filter: (text, converter, options)=>{
               return "converting text"
@@ -146,6 +141,7 @@ export default {
   /** This converts the `\n`'s into line breaks when *
   *   pulled from Airtable's Long text fields        */
   white-space: pre-wrap;
+  margin-bottom: 2em;
 }
 
 .editorial--card {

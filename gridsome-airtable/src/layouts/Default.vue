@@ -8,7 +8,7 @@
       </strong>
       <nav class="nav">
         <g-link class="nav__link nav--yellow" to="/">Home</g-link>
-        <g-link class="nav__link nav--red" to="/editorials">Editorials</g-link>
+        <g-link class="nav__link nav--red" to="/editorials/">Editorials</g-link>
       </nav>
     </header>
     <transition name="fade" appear>
