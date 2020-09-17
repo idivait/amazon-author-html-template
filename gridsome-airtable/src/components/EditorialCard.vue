@@ -77,11 +77,12 @@ export default {
       return html;
     }
   },
-  updated() {
-    this.html = this.computeHtml;
+  async updated() {
+    this.mounted = 1
+    this.html = this.computeHtml
   },
   async mounted() {
-    this.mounted += 1
+    this.mounted = 1
     this.doc = document
   },
   methods: {
@@ -90,20 +91,20 @@ export default {
             return [{
             type: 'output',
             filter: (text, converter, options)=>{
-                // let div = this.doc.createElement('div');
-                // div.innerHTML = text;
+                let div = this.doc.createElement('div');
+                div.innerHTML = text;
 
-                // let src = div.querySelectorAll(srcNode);
-                // src = [ ... src ]
-                // reverse list so interior els go first
-                // src.reverse().forEach((node)=>{
-                //   let newNode = this.doc.createElement(replaceNode);
-                //   newNode.innerHTML = node.innerHTML;
-                //   node.replaceWith(newNode);
-                // });
+                let src = div.querySelectorAll(srcNode);
+                src = [ ... src ]
+                //reverse list so interior els go first
+                src.reverse().forEach((node)=>{
+                  let newNode = this.doc.createElement(replaceNode);
+                  newNode.innerHTML = node.innerHTML;
+                  node.replaceWith(newNode);
+                });
                 console.log("returns post-mount?");
 
-              return text;
+              return div.innerHTML;
             }
           }]
         } else {
