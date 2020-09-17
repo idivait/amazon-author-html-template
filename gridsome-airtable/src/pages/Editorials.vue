@@ -66,7 +66,6 @@ export default {
         const tooLong = lastBlock && lastBlock.length + cur.length > 4000;
         if(lastBlock && !tooLong) {
           result[result.length -1] = `${lastBlock}${cur}`;
-          console.log(result);
         } else {
           result.push(cur);
         }

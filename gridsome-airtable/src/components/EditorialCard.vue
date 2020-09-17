@@ -12,11 +12,12 @@
     <!-- TODO: Figure out how to parse MD -->
     <p class="editorial--excerpt">
       <VueShowdown
+      :key="mounted"
         ref="VueShowdown"
         :markdown="fullReview"
         flavor="github"
         :options="{ emoji: true }"
-        :extensions="[removeWrappingParas, replaceEls('strong','b'), replaceEls('em', 'i'), replaceQuote]"
+        :extensions="[removeWrappingParas, replaceQuote, replaceEls]"
       />
     </p>
     <CopyBlock :html="html" button="Copy HTML"/>
@@ -29,6 +30,8 @@
 <script>
 import moment from "moment";
 import CopyBlock from "~/components/CopyBlock.vue";
+import $DOM from "mock-dom-resources";
+let win = $DOM();
 export default {
   name: "editorialCard",
   props: {
@@ -40,29 +43,13 @@ export default {
   },
   data() {
     return {
+      doc: win.document,
       html: 'Example HTML',
+      mounted: 0,
       removeWrappingParas: () => [{
         type: 'output',
         regex: /<p>(.+?)<\/p>/gsm,
         replace: '<br/>$1'
-      }],
-      replaceEls: (srcNode, replaceNode)=> [{
-        type: 'output',
-        filter: (text, converter, options)=>{
-            let div = document.createElement('div');
-            div.innerHTML = text;
-
-            let src = div.querySelectorAll(srcNode);
-            src = [ ... src ]
-            // reverse list so interior els go first
-            src.reverse().forEach((node)=>{
-              let newNode = document.createElement(replaceNode);
-              newNode.innerHTML = node.innerHTML;
-              node.replaceWith(newNode);
-            });
-
-          return div.innerHTML;
-        }
       }],
       replaceQuote: () => [{
         type: 'output',
@@ -90,8 +77,53 @@ export default {
     }
     this.$attrs.pushEditorial(html);
     this.html = html;
+    this.mounted += 1
   },
   methods: {
+      replaceEls: function(srcNode, replaceNode){
+        if(this.mounted > 0){
+            return [{
+            type: 'output',
+            filter: (text, converter, options)=>{
+              //   let div = this.doc.createElement('div');
+              //   div.innerHTML = text;
+
+              //   let src = div.querySelectorAll(srcNode);
+              //   src = [ ... src ]
+              //   // reverse list so interior els go first
+              //   src.reverse().forEach((node)=>{
+              //     let newNode = this.doc.createElement(replaceNode);
+              //     newNode.innerHTML = node.innerHTML;
+              //     node.replaceWith(newNode);
+              //   });
+
+              // return div.innerHTML;
+              return text + "mounted"
+            }
+          }]
+        } else {
+                      return [{
+            type: 'output',
+            filter: (text, converter, options)=>{
+              //   let div = this.doc.createElement('div');
+              //   div.innerHTML = text;
+
+              //   let src = div.querySelectorAll(srcNode);
+              //   src = [ ... src ]
+              //   // reverse list so interior els go first
+              //   src.reverse().forEach((node)=>{
+              //     let newNode = this.doc.createElement(replaceNode);
+              //     newNode.innerHTML = node.innerHTML;
+              //     node.replaceWith(newNode);
+              //   });
+
+              // return div.innerHTML;
+              return text + "not mounted"
+            }
+          }]
+        }
+
+      },
     formatDate: function(date) {
       // TODO: Convert from moment to luxon
       const format = moment(date).format();
